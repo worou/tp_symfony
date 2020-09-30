@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Commentaire;
+use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,6 +19,42 @@ class CommentaireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Commentaire::class);
     }
+
+    /*
+
+    SELECT * FROM commentaire c
+    ON c.id_article = :id
+    setParameter(a.id = 'id')
+    INNER JOIN article a
+    
+    */
+    // src/Repository/ProductRepository.php
+    public function getCommentaireByArticle($id)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.article = :id')
+            ->innerJoin('App\Entity\Article','a')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+// public function getCommentairesByArticle($articleId)
+// {
+//     $entityManager = $this->getEntityManager();
+
+//     $query = $entityManager->createQuery(
+//         'SELECT a,c
+//         FROM App\Entity\Article c
+//         INNER JOIN a.commentaire c
+//         WHERE a.id = :id'
+//     )->setParameter('id', $articleId);
+
+//     return $query->getResult();
+// }
+
 
     // /**
     //  * @return Commentaire[] Returns an array of Commentaire objects

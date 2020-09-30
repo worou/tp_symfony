@@ -2,13 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
+ * @Vich\Uploadable
+ * 
  */
 class Article
 {
@@ -21,11 +28,21 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Assert\NotBlank(message="Champ obligatoire")
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 6,
+     *      minMessage = "Le titre doit avoir au moins {{ limit }} caractères",
+     *      maxMessage = "Le titre doit avoir au plus {{ limit }} caractères"
+     *   )
      */
     private $titre;
 
     /**
      * @ORM\Column(type="string", length=30)
+     * 
+     * @Assert\NotNull
+     *
      */
     private $auteur;
 
@@ -36,11 +53,15 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=100)
+     *
      */
     private $image;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @Assert\NotNull
+     *
      */
     private $description;
 
@@ -48,6 +69,18 @@ class Article
      * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="article", orphanRemoval=true)
      */
     private $commentaires;
+
+    /**
+     * @Vich\UploadableField(mapping="article_image", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @var \DateTime
+     */
+    private $updatedAt;
 
     public function __construct()
     {
@@ -100,7 +133,7 @@ class Article
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
@@ -148,5 +181,25 @@ class Article
         }
 
         return $this;
+    }
+
+    public function setImageFile(File $imageFile = null):self
+    {
+        $this->imageFile = $imageFile;
+        
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($imageFile) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTime('now');
+        }
+
+        return $this;
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }

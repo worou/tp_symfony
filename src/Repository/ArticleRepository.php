@@ -18,12 +18,12 @@ class ArticleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Article::class);
     }
-
+    //Moteur de recherche
     public function query($mCle)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.titre LIKE :val')
-            ->setParameter('val', $mCle.'%')
+            ->andWhere('a.titre LIKE :X')
+            ->setParameter('X', $mCle.'%')
             ->getQuery()
             ->getResult()
         ;

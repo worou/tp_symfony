@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block titre %}Modification d'article{% endblock %}
+{% block body %}
+
+{# {{form(form_edit)}} #}
+
+{{form_start(form_edit)}}
+{{form_widget(form_edit)}}
+<button type="submit" class="btn btn-success">Envoyer</button>
+{{form_end(form_edit)}}
+
+
+
+{% endblock %}

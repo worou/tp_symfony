@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block titre %}Ressource non disponible{% endblock %}
+{% block body %}
+    <h1>Page not found</h1>
+
+    <p>
+        Vous n'avez à cette fonctionalité, contactez l'administrateur du site
+         <a href="{{ path('article_list') }}">Articles</a>.
+    </p>
+{% endblock %}

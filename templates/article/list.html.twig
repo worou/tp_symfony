@@ -5,9 +5,31 @@
 
 {% block body %}
 
-<table class="table table-striped table-dark">
-    <thead>
+<div class="d-flex justify-content-between">
+    <div></div>
+    <div>
+    <form action="" method="post">
+        <div class="form-group form-inline">
+            <input placeholder="Rechercher..." type="text" id="search" name="search" class="form-control">
+
+            <button type="submit" class="btn btn-secondary">search</button>
+        </div>
+    </form>
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+    <div>
+
+        <a href="{{path('article_add')}}" class="btn btn-warning">
+            <span class="fa fa-plus"></span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-light text-center">
         <tr>
+            <th scope="col">#</th>
             <th scope="col">Titre</th>
             <th scope="col">Auteur</th>
             <th scope="col">Parution</th>
@@ -19,18 +41,28 @@
     
     <tbody>
         {% for article in articles %}
+        
         <tr>
+            <td>{{article.id}}</td>
             <td>{{article.titre|title}}</td>
             <td>{{article.auteur|capitalize}}</td>
             <td>{{article.parution|date("m/d/Y", "Europe/Paris")}}</td>
-            <td><img src="{{asset(article.image)}}" alt=""></td>
+            <td><img src="{{asset('images/'~article.image)}}" alt=""></td>
             <td>{{article.description}}</td>
             <td>
-                <a href="{{ path('article_update',{'id':article.id}) }}" class="btn btn-info">Edit</a>
-                <a href="{{ path('article_delete',{'id':article.id}) }}" class="btn btn-danger">Delete</a>
+                <a href="{{ path('list_comment',{'id':article.id} ) }}" class="btn btn-secondary  ">
+                    <span class="fa fa-comment"></span>
+                </a>
+                <a href="{{ path('article_update',{'id':article.id}) }}" class="btn btn-info">
+                    <span class="fa fa-pen"></span>
+                </a>
+                <a href="{{ path('article_delete',{'id':article.id}) }}" class="btn btn-danger">
+                    <span class="fa fa-trash"></span>
+                </a>
             </td>  
         </tr>
         {% endfor %}
+       
     </tbody>
 </table>
 
